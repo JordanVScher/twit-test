@@ -5,4 +5,4 @@ const config = {
 	access_token_secret: process.env.access_token_secret,
 };
 
-module.exports = config;
+module.exports.credencials = config;
