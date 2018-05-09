@@ -5,7 +5,7 @@ const Twit = require('twit');
 
 const config = require('./config');
 
-const T = new Twit(config.credencials);
+const T = new Twit(config.credencials2);
 
 
 function deleteAllWelcomeAndRule(Twi) {
@@ -48,7 +48,7 @@ function createWelcomeAndRule(Twi) {
 	Twi.post('direct_messages/welcome_messages/new', {
 		welcome_message: {
 			name: 'Bem vindo simples',
-			message_data: { text: 'Olá! Sou o assistente digital do Senador Jordan. Venha interagir comigo :)' },
+			message_data: { text: 'Olá! Sou o assistente digital do Senador Jordan_scher. Venha interagir comigo :)' },
 		},
 	}, (err, data) => {
 		console.log('err => ', err);
@@ -66,7 +66,7 @@ function createWelcomeAndRule(Twi) {
 }
 
 // deleteAllWelcomeAndRule(T);
-// createWelcomeAndRule(T);
+createWelcomeAndRule(T);
 
 
 // const stream = T.stream('statuses/filter', { tweetMode: 'extended', track: 'lula' });
