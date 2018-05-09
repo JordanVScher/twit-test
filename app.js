@@ -17,7 +17,6 @@ const twitterSettings = {
 		accessToken: process.env.access_token,
 		accessTokenSecret: process.env.access_token_secret,
 	},
-	// webhookEndpoint: process.env.webhook,
 };
 
 const twitterBot = new TwitterBot(twitterSettings);
@@ -30,7 +29,7 @@ botmaster.use({
 	type: 'incoming',
 	name: 'my-incoming-middleware',
 	controller: (bot, update) => {
-		console.log(update); // the full raw
+		// console.log(update); // the full raw
 		console.log(bot.__associatedUpdate.message.text); //
 		if (Number.isNaN(parseFloat(bot.__associatedUpdate.message.text))) {
 			return bot.reply(update, 'Nosso bot ainda está em fase de construção! Digite um número pra ver o dobro!');
