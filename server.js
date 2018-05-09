@@ -5,7 +5,7 @@ const Twit = require('twit');
 
 const config = require('./config');
 
-const T = new Twit(config.credencials2);
+const T = new Twit(config.credencials);
 
 
 function deleteAllWelcomeAndRule(Twi) {
@@ -66,7 +66,7 @@ function createWelcomeAndRule(Twi) {
 }
 
 // deleteAllWelcomeAndRule(T);
-createWelcomeAndRule(T);
+// createWelcomeAndRule(T);
 
 
 // const stream = T.stream('statuses/filter', { tweetMode: 'extended', track: 'lula' });
@@ -83,13 +83,13 @@ stream.on('tweet', (tweet) => {
 	} else {
 		console.log('text => ', tweet.text);
 	}
-	// console.log('id => ', tweet.user.id_str);
-	// console.log('name => ', tweet.user.name);
-	// console.log('screen_name => ', tweet.user.screen_name);
-	// console.log('user_lang => ', tweet.user.lang);
-	// console.log('hashtags => ', tweet.entities.hashtags);
-	// console.log('likes =>', tweet.favorite_count);
-	// console.log('retweets =>', tweet.retweet_count);
+	console.log('id => ', tweet.user.id_str);
+	console.log('name => ', tweet.user.name);
+	console.log('screen_name => ', tweet.user.screen_name);
+	console.log('user_lang => ', tweet.user.lang);
+	console.log('hashtags => ', tweet.entities.hashtags);
+	console.log('likes =>', tweet.favorite_count);
+	console.log('retweets =>', tweet.retweet_count);
 
 	if (tweet.retweeted_status) { // check if it's a retweet
 		console.log('retweet de => ', tweet.retweeted_status.user.name);
