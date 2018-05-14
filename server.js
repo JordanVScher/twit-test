@@ -6,77 +6,82 @@ const Twit = require('twit');
 const config = require('./config');
 
 const T = new Twit(config.credencials);
-
-
-function deleteAllWelcomeAndRule(Twi) {
-	// Tiw === T
-	// gets every welcome message and deletes them ALL
-	// also gets rules and deletes the very first one
-	Twi.get('direct_messages/welcome_messages/list', {
-	}, (err2, data2) => {
-		console.log('err list msg => ', err2);
-		console.log('data list msg=> ', data2);
-		if (data2.welcome_messages) {
-			data2.welcome_messages.forEach((message) => {
-				Twi.delete('direct_messages/welcome_messages/destroy', {
-					id: message.id,
-				}, (err, data) => {
-					console.log('err del msg=> ', err);
-					console.log('data del msg => ', data);
-				});
-			});
-			if (data2.welcome_message_rules[0]) {
-				Twi.get('direct_messages/welcome_messages/rules/list', {
-				}, (err3, data3) => {
-					console.log('err => ', err3);
-					console.log('data => ', data3);
-					Twi.delete('direct_messages/welcome_messages/rules/destroy', {
-						id: data2.welcome_message_rules[0].id,
-					}, (err, data) => {
-						console.log('err => ', err);
-						console.log('data => ', data);
-					});
-				});
-			} else { console.log('We have no rules left to delete'); }
-		} else { console.log('We have no welcome messages left to delete'); }
-	});
-}
-
-
-function createWelcomeAndRule(Twi) {
-// Creating a new Welcome message and a new rule using ths messages id
-	Twi.post('direct_messages/welcome_messages/new', {
-		welcome_message: {
-			name: 'Bem vindo simples',
-			message_data: { text: 'Olá! Sou o assistente digital do Senador Jordan_scher. Venha interagir comigo :)' },
-		},
-	}, (err, data) => {
-		console.log('err => ', err);
-		console.log('data => ', data);
-		console.log('o id => ', data.welcome_message.id);
-		Twi.post('direct_messages/welcome_messages/rules/new', {
-			welcome_message_rule: {
-				welcome_message_id: data.welcome_message.id,
-			},
-		}, (err2, data2) => {
-			console.log('err => ', err2);
-			console.log('data => ', data2);
-		});
-	});
-}
+// console.log(T);
+//
+// function deleteAllWelcomeAndRule(Twi) {
+// 	// Tiw === T
+// 	// gets every welcome message and deletes them ALL
+// 	// also gets rules and deletes the very first one
+// 	Twi.get('direct_messages/welcome_messages/list', {
+// 	}, (err2, data2) => {
+// 		console.log('err list msg => ', err2);
+// 		console.log('data list msg=> ', data2);
+// 		if (data2.welcome_messages) {
+// 			data2.welcome_messages.forEach((message) => {
+// 				Twi.delete('direct_messages/welcome_messages/destroy', {
+// 					id: message.id,
+// 				}, (err, data) => {
+// 					console.log('err del msg=> ', err);
+// 					console.log('data del msg => ', data);
+// 				});
+// 			});
+// 			if (data2.welcome_message_rules[0]) {
+// 				Twi.get('direct_messages/welcome_messages/rules/list', {
+// 				}, (err3, data3) => {
+// 					console.log('err => ', err3);
+// 					console.log('data => ', data3);
+// 					Twi.delete('direct_messages/welcome_messages/rules/destroy', {
+// 						id: data2.welcome_message_rules[0].id,
+// 					}, (err, data) => {
+// 						console.log('err => ', err);
+// 						console.log('data => ', data);
+// 					});
+// 				});
+// 			} else { console.log('We have no rules left to delete'); }
+// 		} else { console.log('We have no welcome messages left to delete'); }
+// 	});
+// }
+//
+//
+// function createWelcomeAndRule(Twi) {
+// // Creating a new Welcome message and a new rule using ths messages id
+// 	Twi.post('direct_messages/welcome_messages/new', {
+// 		welcome_message: {
+// 			name: 'Bem vindo simples',
+// 			message_data: { text: 'Olá! Sou o assistente digital do Jordan_scher. :)' },
+// 		},
+// 	}, (err, data) => {
+// 		console.log('err => ', err);
+// 		console.log('data => ', data);
+// 		console.log('o id => ', data.welcome_message.id);
+// 		Twi.post('direct_messages/welcome_messages/rules/new', {
+// 			welcome_message_rule: {
+// 				welcome_message_id: data.welcome_message.id,
+// 			},
+// 		}, (err2, data2) => {
+// 			console.log('err => ', err2);
+// 			console.log('data => ', data2);
+// 		});
+// 	});
+// }
 
 // deleteAllWelcomeAndRule(T);
 // createWelcomeAndRule(T);
 
+// T.post('statuses/update', { status: 'aadfgdfgaa #ajudaJordan' }, (err, data) => {
+// 	console.log('err =>', err);
+// 	console.log('data =>', data.createdAt);
+// 	// console.log('response =>', response);
+// });
 
-// const stream = T.stream('statuses/filter', { tweetMode: 'extended', track: 'lula' });
-const stream = T.stream('statuses/filter', {
-	tweet_mode: 'extended',
-	track: ['mason & dixon', 'roberto bolaño', 'Cormac McCarthy', 'don delillo', 'kundera', 'italo calvino', 'pynchon', 'vonnegut', 'william faulkner', 'garcia marquez', 'foster wallace', 'infinite jest', 'gravitys rainbow', "gravity's rainbow"],
-});
+const stream = T.stream('statuses/filter', { tweetMode: 'extended', track: ['#ajudaJordan bob', '#ajudaJordan pop'] });
+// const stream = T.stream('statuses/filter', {
+// 	tweet_mode: 'extended',
+// 	track: ['mishima', 'mason & dixon', 'roberto bolaño', 'Cormac McCarthy', 'don delillo', 'kundera', 'italo calvino', 'pynchon', 'vonnegut', 'william faulkner', 'garcia marquez', 'foster wallace', 'infinite jest', 'gravitys rainbow', "gravity's rainbow"],
+// });
 
 stream.on('tweet', (tweet) => {
-	// console.log('id => ', tweet);
+	console.log('id => ', tweet);
 
 	if (tweet.extended_tweet) {
 		console.log('full_text => ', tweet.extended_tweet.full_text);
@@ -99,7 +104,20 @@ stream.on('tweet', (tweet) => {
 			console.log('text2 => ', tweet.retweeted_status.text);
 		}
 	}
-	console.log('-----------------------');
+
+	console.log('\nNossa resposta:', tweet.id);
+	setTimeout(() => {
+		T.post('statuses/update', {
+			status: `@${tweet.user.screen_name} Olá, isso isso e aquilo! ${Date.now()}`,
+			in_reply_to_status_id: tweet.id_str,
+			// in_reply_to_screen_name: tweet.user.screen_name,
+		}, (err, data) => {
+			console.log('err =>', err);
+			console.log('data =>', data);
+		});
+
+		console.log('----------------------');
+	}, 10000);
 });
 
 
@@ -121,11 +139,6 @@ stream.on('tweet', (tweet) => {
 // 	console.log('data =>', data);
 // });
 
-// T.post('statuses/update', { status: 'aaaaa' }, (err, data) => {
-// 	console.log('err =>', err);
-// 	console.log('data =>', data);
-// 	// console.log('response =>', response);
-// });
 
 // function randomFromArray(images) {
 // 	return images[Math.floor(Math.random() * images.length)];
