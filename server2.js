@@ -1,9 +1,9 @@
-require('dotenv').config();
+require("dotenv").config();
 
-// const fs = require('fs');
-const Twit = require('twit');
+const fs = require("fs");
+const Twit = require("twit");
 
-const config = require('./config');
+const config = require("./config");
 
 const T = new Twit(config.credencials);
 // console.log(T);
@@ -74,69 +74,62 @@ const T = new Twit(config.credencials);
 // 	// console.log('response =>', response);
 // });
 
-// const stream = T.stream('statuses/filter',
-// { tweetMode: 'extended', track: ['#ajudaJordan bob', '#ajudaJordan pop'] });
-const stream = T.stream('statuses/filter', {
-	tweet_mode: 'extended',
-	track: [
-		'yukio mishima',
-		'mason & dixon',
-		'roberto bolaño',
-		'cormac mccarthy',
-		'don delillo',
-		'kundera',
-		'italo calvino',
-		'pynchon',
-		'vonnegut',
-		'william faulkner',
-		'garcia marquez',
-		'foster wallace',
-		'infinite jest',
-		'gravitys rainbow',
-		"gravity's rainbow",
-		'philip roth',
-	],
+const stream = T.stream("statuses/filter", {
+  tweetMode: "extended",
+  track: ["#ajudaJordan bob", "#ajudaJordan pop"]
 });
+// const stream = T.stream('statuses/filter', {
+// 	tweet_mode: 'extended',
+// 	track: ['mishima', 'mason & dixon', 'haruki murakami', 'roberto bolaño', 'Cormac McCarthy', 'don delillo', 'kundera', 'italo calvino', 'pynchon', 'vonnegut', 'william faulkner', 'garcia marquez', 'foster wallace', 'infinite jest', 'gravitys rainbow', "gravity's rainbow"],
+// });
 
-stream.on('tweet', (tweet) => {
-	// console.log('id => ', tweet);
+stream.on("tweet", tweet => {
+  // console.log('id => ', tweet);
 
-	if (tweet.extended_tweet) {
-		console.log('full_text => ', tweet.extended_tweet.full_text);
-	} else {
-		console.log('text => ', tweet.text);
-	}
-	console.log('id => ', tweet.user.id_str);
-	console.log('name => ', tweet.user.name);
-	console.log('screen_name => ', tweet.user.screen_name);
-	console.log('user_lang => ', tweet.user.lang);
-	// console.log('hashtags => ', tweet.entities.hashtags);
-	// console.log('likes =>', tweet.favorite_count);
-	console.log('retweets =>', tweet.retweet_count);
+  if (tweet.extended_tweet) {
+    console.log("full_text => ", tweet.extended_tweet.full_text);
+  } else {
+    console.log("text => ", tweet.text);
+  }
+  console.log("id => ", tweet.user.id_str);
+  console.log("name => ", tweet.user.name);
+  console.log("screen_name => ", tweet.user.screen_name);
+  console.log("user_lang => ", tweet.user.lang);
+  console.log("hashtags => ", tweet.entities.hashtags);
+  console.log("likes =>", tweet.favorite_count);
+  console.log("retweets =>", tweet.retweet_count);
 
-	if (tweet.retweeted_status) {
-		// check if it's a retweet
-		console.log('retweet de => ', tweet.retweeted_status.user.name);
-		if (tweet.retweeted_status.truncated === true) {
-			console.log('full_text2 => ',	tweet.retweeted_status.extended_tweet.full_text); // this is the actual full_text for retweets
-		} else {
-			console.log('text2 => ', tweet.retweeted_status.text);
-		}
-	}
+  if (tweet.retweeted_status) {
+    // check if it's a retweet
+    console.log("retweet de => ", tweet.retweeted_status.user.name);
+    if (tweet.retweeted_status.truncated === true) {
+      console.log(
+        "full_text2 => ",
+        tweet.retweeted_status.extended_tweet.full_text
+      ); // this is the actual full_text for retweets
+    } else {
+      console.log("text2 => ", tweet.retweeted_status.text);
+    }
+  }
 
-	// console.log('\nNossa resposta:', tweet.id);
-	// setTimeout(() => {
-	// 	T.post('statuses/update', {
-	// 		status: `@${tweet.user.screen_name} Olá, isso isso e aquilo! ${Date.now()}`,
-	// 		in_reply_to_status_id: tweet.id_str,
-	// 		// in_reply_to_screen_name: tweet.user.screen_name,
-	// 	}, (err, data) => {
-	// 		console.log('err =>', err);
-	// 		console.log('data =>', data);
-	// 	});
-	//
-	// }, 10000);
-	console.log('----------------------');
+  console.log("\nNossa resposta:", tweet.id);
+  setTimeout(() => {
+    T.post(
+      "statuses/update",
+      {
+        status: `@${
+          tweet.user.screen_name
+        } Olá, isso isso e aquilo! ${Date.now()}`,
+        in_reply_to_status_id: tweet.id_str
+        // in_reply_to_screen_name: tweet.user.screen_name,
+      },
+      (err, data) => {
+        console.log("err =>", err);
+        console.log("data =>", data);
+      }
+    );
+  }, 10000);
+  console.log("----------------------");
 });
 
 // T.post('direct_messages/new', { screen_name: 'JordanTwo', text: 'aeeeee' }, (err, data) => {
