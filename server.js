@@ -95,6 +95,9 @@ const stream = T.stream('statuses/filter', {
 		'gravitys rainbow',
 		"gravity's rainbow",
 		'philip roth',
+		'graça infinita',
+		'cem anos de solidão',
+		'salinger',
 	],
 });
 
@@ -106,13 +109,13 @@ stream.on('tweet', (tweet) => {
 	} else {
 		console.log('text => ', tweet.text);
 	}
-	console.log('id => ', tweet.user.id_str);
+	// console.log('id => ', tweet.user.id_str);
 	console.log('name => ', tweet.user.name);
 	console.log('screen_name => ', tweet.user.screen_name);
 	console.log('user_lang => ', tweet.user.lang);
 	// console.log('hashtags => ', tweet.entities.hashtags);
 	// console.log('likes =>', tweet.favorite_count);
-	console.log('retweets =>', tweet.retweet_count);
+	// console.log('retweets =>', tweet.retweet_count);
 
 	if (tweet.retweeted_status) {
 		// check if it's a retweet
