@@ -201,7 +201,7 @@ stream.on('tweet', (tweet) => {
 			(err, data) => {
 				console.log('err =>', err);
 				console.log('data =>', data);
-			},
+			}
 		);
 	}, 10000);
 	console.log('----------------------');
