@@ -64,3 +64,5 @@ typings/
 
 # Sessions
 .sessions
+
+private_key.json

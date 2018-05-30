@@ -5,8 +5,9 @@
     "node": true
     },
     "rules": {
-  	  "no-console": 'off',
+  	  "no-console": 0,
       "indent": ["error", "tab"],
-    "no-tabs": 0
-  }
+      "no-tabs": 0,
+      "comma-dangle": 0
+     }
 }

@@ -98,6 +98,11 @@ const stream = T.stream('statuses/filter', {
 		'graça infinita',
 		'cem anos de solidão',
 		'salinger',
+		'cave story',
+		'metroid',
+		'super mario world',
+		'donkey kong country 2',
+		'#indicalivro',
 	],
 });
 

@@ -1,9 +1,31 @@
-require("dotenv").config();
+require('dotenv').config();
 
-const fs = require("fs");
-const Twit = require("twit");
+// const fs = require('fs');
+const Twit = require('twit');
 
-const config = require("./config");
+const config = require('./config');
+
+const gsjson = require('google-spreadsheet-to-json');
+const privateKey = require('./private_key.json');
+
+let dialog;
+let answer;
+function reload() {
+	gsjson({
+		spreadsheetId: process.env.SPREADKEY,
+		credentials: privateKey,
+		worksheet: 'Twitter',
+		hash: 'id',
+	}).then((result) => {
+		console.log(result);
+		dialog = result;
+	}).catch((err) => {
+		console.log(err.message);
+		console.log(err.stack);
+	});
+}
+
+reload();
 
 const T = new Twit(config.credencials);
 // console.log(T);
@@ -74,62 +96,115 @@ const T = new Twit(config.credencials);
 // 	// console.log('response =>', response);
 // });
 
-const stream = T.stream("statuses/filter", {
-  tweetMode: "extended",
-  track: ["#ajudaJordan bob", "#ajudaJordan pop"]
+const stream2 = T.stream('user');
+
+stream2.on('direct_message', (directMsg) => {
+	console.log(directMsg);
+	console.log('\n\n\n');
+
+	const text = directMsg.direct_message.text.toLowerCase();
+	answer = 'Não entendi';
+	if (text.includes('segurança')) {
+		answer = dialog[1].resposta;
+	}
+	if (text.includes('saúde')) {
+		answer = dialog[2].resposta;
+	}
+	if (text.includes('educação')) {
+		answer = dialog[3].resposta;
+	}
+	if (text.includes('corrupção')) {
+		answer = dialog[4].resposta;
+	}
+	if (text.includes('desemprego')) {
+		answer = dialog[5].resposta;
+	}
+	if (text.includes('recarregar')) {
+		answer = 'As definições de diálogos foram atualizadas.';
+		reload();
+	}
+
+	console.log(`${directMsg.direct_message.sender_screen_name} => ${directMsg.direct_message.sender_id_str}`);
+	console.log('Disse: ', text);
+	console.log('Vamos dizer: ', answer);
+
+	T.post('direct_messages/new', { user_id: directMsg.direct_message.sender_id_str, text: answer }, (err, data) => {
+		console.log('err =>', err);
+		console.log('data =>', data);
+	});
 });
-// const stream = T.stream('statuses/filter', {
-// 	tweet_mode: 'extended',
-// 	track: ['mishima', 'mason & dixon', 'haruki murakami', 'roberto bolaño', 'Cormac McCarthy', 'don delillo', 'kundera', 'italo calvino', 'pynchon', 'vonnegut', 'william faulkner', 'garcia marquez', 'foster wallace', 'infinite jest', 'gravitys rainbow', "gravity's rainbow"],
-// });
 
-stream.on("tweet", tweet => {
-  // console.log('id => ', tweet);
+const stream = T.stream('statuses/filter', {
+	tweetMode: 'extended',
+	track: ['#ajudaJordan recarregar', '#ajudaJordan segurança', '#ajudaJordan saúde', '#ajudaJordan educação', '#ajudaJordan corrupção', '#ajudaJordan desemprego'],
+});
 
-  if (tweet.extended_tweet) {
-    console.log("full_text => ", tweet.extended_tweet.full_text);
-  } else {
-    console.log("text => ", tweet.text);
-  }
-  console.log("id => ", tweet.user.id_str);
-  console.log("name => ", tweet.user.name);
-  console.log("screen_name => ", tweet.user.screen_name);
-  console.log("user_lang => ", tweet.user.lang);
-  console.log("hashtags => ", tweet.entities.hashtags);
-  console.log("likes =>", tweet.favorite_count);
-  console.log("retweets =>", tweet.retweet_count);
+stream.on('tweet', (tweet) => {
+	let text;
+	if (tweet.extended_tweet) {
+		console.log('full_text => ', tweet.extended_tweet.full_text);
+		text = tweet.extended_tweet.full_text.toLowerCase();
+	} else {
+		console.log('text => ', tweet.text);
+		text = tweet.text.toLowerCase();
+	}
+	console.log('id => ', tweet.user.id_str);
+	console.log('name => ', tweet.user.name);
+	console.log('screen_name => ', tweet.user.screen_name);
+	console.log('user_lang => ', tweet.user.lang);
+	console.log('hashtags => ', tweet.entities.hashtags);
+	console.log('likes =>', tweet.favorite_count);
+	console.log('retweets =>', tweet.retweet_count);
 
-  if (tweet.retweeted_status) {
-    // check if it's a retweet
-    console.log("retweet de => ", tweet.retweeted_status.user.name);
-    if (tweet.retweeted_status.truncated === true) {
-      console.log(
-        "full_text2 => ",
-        tweet.retweeted_status.extended_tweet.full_text
-      ); // this is the actual full_text for retweets
-    } else {
-      console.log("text2 => ", tweet.retweeted_status.text);
-    }
-  }
+	// if (tweet.retweeted_status) {
+	// 	// check if it's a retweet
+	// 	console.log('retweet de => ', tweet.retweeted_status.user.name);
+	// 	if (tweet.retweeted_status.truncated === true) {
+	//  console.log('full_text2 => ',	tweet.retweeted_status.extended_tweet.full_text);
+	//  this is the actual full_text for retweets
+	// 	} else {
+	// 		console.log('text2 => ', tweet.retweeted_status.text);
+	// 	}
+	// }
 
-  console.log("\nNossa resposta:", tweet.id);
-  setTimeout(() => {
-    T.post(
-      "statuses/update",
-      {
-        status: `@${
-          tweet.user.screen_name
-        } Olá, isso isso e aquilo! ${Date.now()}`,
-        in_reply_to_status_id: tweet.id_str
-        // in_reply_to_screen_name: tweet.user.screen_name,
-      },
-      (err, data) => {
-        console.log("err =>", err);
-        console.log("data =>", data);
-      }
-    );
-  }, 10000);
-  console.log("----------------------");
+	if (text.includes('segurança')) {
+		answer = dialog[1].resposta;
+	}
+	if (text.includes('saúde')) {
+		answer = dialog[2].resposta;
+	}
+	if (text.includes('educação')) {
+		answer = dialog[3].resposta;
+	}
+	if (text.includes('corrupção')) {
+		answer = dialog[4].resposta;
+	}
+	if (text.includes('desemprego')) {
+		answer = dialog[5].resposta;
+	}
+	if (text.includes('recarregar')) {
+		answer = 'As definições de diálogos foram atualizadas.';
+		reload();
+	}
+
+
+	console.log('Resposta ', answer);
+	console.log('\nNossa resposta:', tweet.id);
+	setTimeout(() => {
+		T.post(
+			'statuses/update',
+			{
+				status: `@${tweet.user.screen_name} ${answer} ${Date.now()}`,
+				in_reply_to_status_id: tweet.id_str,
+				// in_reply_to_screen_name: tweet.user.screen_name,
+			},
+			(err, data) => {
+				console.log('err =>', err);
+				console.log('data =>', data);
+			},
+		);
+	}, 10000);
+	console.log('----------------------');
 });
 
 // T.post('direct_messages/new', { screen_name: 'JordanTwo', text: 'aeeeee' }, (err, data) => {
@@ -193,3 +268,14 @@ stream.on("tweet", tweet => {
 // 		}, 60000);
 // 	}
 // });
+
+// function isReply(tweet) {
+//   if (tweet.retweeted_status
+//     || tweet.in_reply_to_status_id
+//     || tweet.in_reply_to_status_id_str
+//     || tweet.in_reply_to_user_id
+//     || tweet.in_reply_to_user_id_str
+//     || tweet.in_reply_to_screen_name)
+//     return true
+// }
+
