@@ -10,6 +10,8 @@ const privateKey = require('./private_key.json');
 
 let dialog;
 let answer;
+let ourID;
+
 function reload() {
 	gsjson({
 		spreadsheetId: process.env.SPREADKEY,
@@ -99,44 +101,59 @@ const T = new Twit(config.credencials);
 const stream2 = T.stream('user');
 
 stream2.on('direct_message', (directMsg) => {
-	console.log(directMsg);
-	console.log('\n\n\n');
+	if (ourID !== directMsg.direct_message.sender_id_str) {
+		// directMsg.direct_message.sender_id_str !== directMsg.direct_message.recipient.id_str) {
+		// console.log(directMsg);
+		console.log('\n\n\n');
 
-	const text = directMsg.direct_message.text.toLowerCase();
-	answer = 'Não entendi';
-	if (text.includes('segurança')) {
-		answer = dialog[1].resposta;
-	}
-	if (text.includes('saúde')) {
-		answer = dialog[2].resposta;
-	}
-	if (text.includes('educação')) {
-		answer = dialog[3].resposta;
-	}
-	if (text.includes('corrupção')) {
-		answer = dialog[4].resposta;
-	}
-	if (text.includes('desemprego')) {
-		answer = dialog[5].resposta;
-	}
-	if (text.includes('recarregar')) {
-		answer = 'As definições de diálogos foram atualizadas.';
-		reload();
-	}
+		const text = directMsg.direct_message.text.toLowerCase();
+		answer = 'Não entendi';
+		if (text.includes('segurança')) {
+			answer = dialog[1].resposta;
+		}
+		if (text.includes('saúde')) {
+			answer = dialog[2].resposta;
+		}
+		if (text.includes('educação')) {
+			answer = dialog[3].resposta;
+		}
+		if (text.includes('corrupção')) {
+			answer = dialog[4].resposta;
+		}
+		if (text.includes('desemprego')) {
+			answer = dialog[5].resposta;
+		}
+		if (text.includes('recarregar')) {
+			answer = 'As definições de diálogos foram atualizadas.';
+			reload();
+		}
 
-	console.log(`${directMsg.direct_message.sender_screen_name} => ${directMsg.direct_message.sender_id_str}`);
-	console.log('Disse: ', text);
-	console.log('Vamos dizer: ', answer);
+		console.log(`${directMsg.direct_message.sender_screen_name} => ${directMsg.direct_message.sender_id_str}`);
+		console.log('Disse: ', text);
+		console.log('Vamos dizer: ', answer);
 
-	T.post('direct_messages/new', { user_id: directMsg.direct_message.sender_id_str, text: answer }, (err, data) => {
-		console.log('err =>', err);
-		console.log('data =>', data);
-	});
+		T.post(
+			'direct_messages/new',
+			{ user_id: directMsg.direct_message.sender_id_str, text: answer },
+			(err, data) => {
+				// console.log('err =>', err);
+				// console.log('data =>', data);
+				ourID = data.sender_id_str;
+			}
+		);
+	}
 });
 
 const stream = T.stream('statuses/filter', {
 	tweetMode: 'extended',
-	track: ['#ajudaJordan recarregar', '#ajudaJordan segurança', '#ajudaJordan saúde', '#ajudaJordan educação', '#ajudaJordan corrupção', '#ajudaJordan desemprego'],
+	track: [
+		'#ajudaJordan recarregar',
+		'#ajudaJordan segurança',
+		'#ajudaJordan saúde',
+		'#ajudaJordan educação',
+		'#ajudaJordan corrupção',
+		'#ajudaJordan desemprego',
+	],
 });
 
 stream.on('tweet', (tweet) => {
@@ -186,7 +203,6 @@ stream.on('tweet', (tweet) => {
 		answer = 'As definições de diálogos foram atualizadas.';
 		reload();
 	}
-
 
 	console.log('Resposta ', answer);
 	console.log('\nNossa resposta:', tweet.id);
@@ -278,4 +294,3 @@ stream.on('tweet', (tweet) => {
 //     || tweet.in_reply_to_screen_name)
 //     return true
 // }
-

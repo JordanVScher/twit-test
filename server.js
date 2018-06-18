@@ -82,12 +82,12 @@ const stream = T.stream('statuses/filter', {
 		'yukio mishima',
 		'mason & dixon',
 		'roberto bolaño',
-		'cormac mccarthy',
+		// 'cormac mccarthy',
 		'don delillo',
 		'kundera',
 		'italo calvino',
 		'pynchon',
-		'vonnegut',
+		// 'vonnegut',
 		'william faulkner',
 		'garcia marquez',
 		'foster wallace',
@@ -99,37 +99,88 @@ const stream = T.stream('statuses/filter', {
 		'cem anos de solidão',
 		'salinger',
 		'cave story',
-		'metroid',
-		'super mario world',
+		'super metroid',
+		// 'super mario world',
 		'donkey kong country 2',
-		'#indicalivro',
+		'steamed hams',
+		'final fantasy vii',
+		'final fantasy 7',
+		'FF7',
+		'FFVII',
+		'final fantasy viii',
+		'final fantasy 8',
+		'FF8',
+		'FFVIII',
+		'final fantasy v',
+		'final fantasy 5',
+		'FF5',
+		'FFV',
+		'final fantasy vi',
+		'final fantasy 6',
+		'FF6',
+		'FFVI',
+		'Evangelion',
+		'K-on',
+		'Cowboy Bebop',
+		'Samurai Champloo',
+		'shinsekai yori',
+		'made in abyss',
+		'berserk',
+		'haruhi suzumiya',
+		'ping pong: the animation',
+		'tatami galaxy',
+		// 'hunter x hunter',
+		// 'hxh',
+		'mahoujin guruguru',
+		'hideaki anno',
+		'eiichiro oda',
+		'shanks',
+		'princess tutu',
+		'tite kubo',
+		// 'naruto',
+		// 'hero academia',
+		'yoko kanno',
+		'shiro sagisu',
+		'nobuo uematsu'
 	],
+	// Mahou Tsukai Tai
 });
 
 stream.on('tweet', (tweet) => {
 	// console.log('id => ', tweet);
-
-	if (tweet.extended_tweet) {
-		console.log('full_text => ', tweet.extended_tweet.full_text);
+	if ((tweet.retweeted_status && tweet.text.includes('lula')) || (tweet.retweeted_status && tweet.text.includes('#quote')) || tweet.retweeted_status
+		|| (tweet.user.lang !== 'en' && tweet.user.lang !== 'pt' && tweet.user.lang !== 'es') ||
+		tweet.text.includes('trash') || tweet.text.includes('shit') || tweet.text.includes('overrated') || tweet.text.toLowerCase().includes('trump')) {
+		// console.log('xc');
 	} else {
-		console.log('text => ', tweet.text);
-	}
-	// console.log('id => ', tweet.user.id_str);
-	console.log('name => ', tweet.user.name);
-	console.log('screen_name => ', tweet.user.screen_name);
-	console.log('user_lang => ', tweet.user.lang);
-	// console.log('hashtags => ', tweet.entities.hashtags);
-	// console.log('likes =>', tweet.favorite_count);
-	// console.log('retweets =>', tweet.retweet_count);
-
-	if (tweet.retweeted_status) {
-		// check if it's a retweet
-		console.log('retweet de => ', tweet.retweeted_status.user.name);
-		if (tweet.retweeted_status.truncated === true) {
-			console.log('full_text2 => ',	tweet.retweeted_status.extended_tweet.full_text); // this is the actual full_text for retweets
+		if (tweet.extended_tweet &&
+			!((tweet.extended_tweet.full_text.includes('trash') || tweet.extended_tweet.full_text.includes('shit') ||
+			tweet.extended_tweet.full_text.includes('overrated') || tweet.extended_tweet.full_text.toLowerCase().includes('trump')))) {
+			console.log('full_text => ', tweet.extended_tweet.full_text);
 		} else {
-			console.log('text2 => ', tweet.retweeted_status.text);
+			console.log('text => ', tweet.text);
 		}
+		// console.log('id => ', tweet.user.id_str);
+		console.log('name => ', tweet.user.name);
+		console.log('screen_name => ', tweet.user.screen_name);
+		console.log('location => ', tweet.user.location);
+		console.log('flw count => ', tweet.user.followers_count);
+
+		console.log('user_lang => ', tweet.user.lang);
+		// console.log('hashtags => ', tweet.entities.hashtags);
+		// console.log('likes =>', tweet.favorite_count);
+		// console.log('retweets =>', tweet.retweet_count);
+
+		if (tweet.retweeted_status) {
+			// check if it's a retweet
+			console.log('retweet de => ', tweet.retweeted_status.user.name);
+			if (tweet.retweeted_status.truncated === true) {
+				console.log('full_text2 => ', tweet.retweeted_status.extended_tweet.full_text); // this is the actual full_text for retweets
+			} else {
+				console.log('text2 => ', tweet.retweeted_status.text);
+			}
+		}
+		console.log('----------------------');
 	}
 
 	// console.log('\nNossa resposta:', tweet.id);
@@ -144,7 +195,6 @@ stream.on('tweet', (tweet) => {
 	// 	});
 	//
 	// }, 10000);
-	console.log('----------------------');
 });
 
 // T.post('direct_messages/new', { screen_name: 'JordanTwo', text: 'aeeeee' }, (err, data) => {
