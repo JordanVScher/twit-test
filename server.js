@@ -139,9 +139,12 @@ const stream = T.stream('statuses/filter', {
 		'tite kubo',
 		// 'naruto',
 		// 'hero academia',
+		'luluco',
+		'inferno cop',
 		'yoko kanno',
 		'shiro sagisu',
-		'nobuo uematsu'
+		'nobuo uematsu',
+		'#ptutu',
 	],
 	// Mahou Tsukai Tai
 });
