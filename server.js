@@ -145,6 +145,7 @@ const stream = T.stream('statuses/filter', {
 		'shiro sagisu',
 		'nobuo uematsu',
 		'#ptutu',
+		'steven universe'
 	],
 	// Mahou Tsukai Tai
 });
