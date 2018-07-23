@@ -3,11 +3,18 @@
   "env": {
     "browser": true,
     "node": true
-    },
-    "rules": {
-  	  "no-console": 0,
-      "indent": ["error", "tab"],
-      "no-tabs": 0,
-      "comma-dangle": 0
-     }
+  },
+  "rules": {
+    "no-console": 0,
+    "indent": [
+      "error",
+      "tab"
+    ],
+    "no-tabs": 0,
+    "default-case": 0,
+    "max-len": [
+      "error",
+      150
+    ]
+  }
 }
